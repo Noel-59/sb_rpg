@@ -14,18 +14,36 @@ const App = () => {
     xp: 0,
     buffs: [],
     debuffs: [],
+    inventory: [], // Add inventory to player state
   });
 
   const [boss, setBoss] = useState(generateBoss(currentLevel)); // Initial boss at level 1
 
+  // List of possible items
+  const itemList = [
+    { name: "Health Potion", effect: "Restore 50 health", restore: 50 },
+    { name: "Power Boost", effect: "Increase damage by 5 for next battle", damageBoost: 5 },
+    { name: "Defense Shield", effect: "Increase defense by 3 for next battle", defenseBoost: 3 },
+  ];
+
+  // Function to generate a random item
+  const getRandomItem = () => {
+    const randomIndex = Math.floor(Math.random() * itemList.length);
+    return itemList[randomIndex];
+  };
+
   // Handle player victory and move to the next level
   const handleVictory = () => {
     setGameOver(true);
-    setPlayer((prev) => ({
-      ...prev,
-      xp: prev.xp + 100,
-      level: currentLevel + 1,
-    }));
+    setPlayer((prev) => {
+      const newItem = getRandomItem(); // Get a random item after victory
+      return {
+        ...prev,
+        xp: prev.xp + 100,
+        level: currentLevel + 1,
+        inventory: [...prev.inventory, newItem], // Add the new item to the player's inventory
+      };
+    });
   };
 
   // Handle defeat and end game
@@ -63,6 +81,18 @@ const App = () => {
         <VictoryScreen player={player} onNextLevel={handleNextLevel} />
       ) : (
         <GameOver onRestart={handleRestart} />
+      )}
+      {gameOver && player.inventory.length > 0 && (
+        <div className="inventory">
+          <h3>Your Inventory:</h3>
+          <ul>
+            {player.inventory.map((item, index) => (
+              <li key={index}>
+                {item.name}: {item.effect}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

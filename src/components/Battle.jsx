@@ -13,9 +13,9 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
   const [healCooldown, setHealCooldown] = useState(0); // Heal cooldown in turns
   const [inventory, setInventory] = useState([startingWeapon]);
   const [equippedWeapon, setEquippedWeapon] = useState(startingWeapon);
+  const [equippedSpecialItem, setEquippedSpecialItem] = useState(null); // Track special item
   const [turnCounter, setTurnCounter] = useState(0); // To track turns
   const [isPlayerTurn, setIsPlayerTurn] = useState(true); // Track if it's player's turn
-  const [potions, setPotions] = useState(2); // Starting with 2 healing potions
 
   const logRef = useRef(null);
 
@@ -37,7 +37,6 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
 
     setBoss((prev) => ({ ...prev, health: newBossHealth }));
 
-    // Add a more varied attack message
     const attackMessages = [
       `You swung ${equippedWeapon?.name} and dealt ${playerDamage} damage!`,
       `Your attack with ${equippedWeapon?.name} hit hard, dealing ${playerDamage} damage!`,
@@ -218,6 +217,9 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
         <h3>
           Equipped Weapon: {equippedWeapon.name} (Damage: {equippedWeapon.damage})
         </h3>
+        {equippedSpecialItem && (
+          <h3>Equipped Special Item: {equippedSpecialItem.name}</h3>
+        )}
       </div>
 
       <div className="battle-actions">
@@ -250,15 +252,16 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
 
       <div className="inventory">
         <h3>Inventory</h3>
-        {inventory.map((weapon, index) => (
+        {inventory.map((item, index) => (
           <div key={index}>
             <p>
-              {weapon.name} (Damage: {weapon.damage}){" "}
-              {equippedWeapon.name !== weapon.name && (
-                <button onClick={() => setEquippedWeapon(weapon)}>
-                  Equip
-                </button>
-              )}
+              {item.name} {item.damage ? `(Damage: ${item.damage})` : ""} 
+              <button onClick={() => setEquippedWeapon(item)}>
+                Equip Weapon
+              </button>
+              <button onClick={() => setEquippedSpecialItem(item)}>
+                Equip Special Item
+              </button>
             </p>
           </div>
         ))}
