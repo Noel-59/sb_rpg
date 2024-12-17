@@ -298,6 +298,23 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
           </div>
         ))}
       </div>
+
+      {/* Your Hand Box */}
+      <div className="your-hand">
+        <h3>Your Hand</h3>
+        <p>
+          {equippedWeapon.name} (Damage: {equippedWeapon.damage})
+          <button onClick={() => setEquippedWeapon(null)}>Unequip</button>
+        </p>
+        {equippedSpecialItem && (
+          <p>
+            {equippedSpecialItem.name}
+            <button onClick={() => setEquippedSpecialItem(null)}>
+              Unequip
+            </button>
+          </p>
+        )}
+      </div>
     </div>
   );
 };
