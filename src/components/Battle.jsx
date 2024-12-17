@@ -4,6 +4,10 @@ import { weaponNames, monsterNames } from "../components/themedNames"; // Import
 import Player from "./Player"; // Import Player component
 
 const startingWeapon = { name: "Grim Reaper's Scythe", damage: 5 }; // Default weapon
+const specialItems = [
+  { name: "Soul Reaper's Poison", effect: "poison", damage: 10 }, // Poison effect
+  { name: "Mega Heal Elixir", effect: "heal", healAmount: 50 },  // Heal effect
+];
 
 const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
   const [level, setLevel] = useState(player.level);
@@ -11,11 +15,12 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
   const [isAttacking, setIsAttacking] = useState(false);
   const [isSpecialReady, setIsSpecialReady] = useState(false);
   const [healCooldown, setHealCooldown] = useState(0); // Heal cooldown in turns
-  const [inventory, setInventory] = useState([startingWeapon]);
-  const [equippedWeapon, setEquippedWeapon] = useState(startingWeapon);
-  const [equippedSpecialItem, setEquippedSpecialItem] = useState(null); // Track special item
+  const [inventory, setInventory] = useState([startingWeapon, ...specialItems]); // Add special items to inventory
+  const [equippedWeapon, setEquippedWeapon] = useState(startingWeapon); // Track equipped weapon
+  const [equippedSpecialItem, setEquippedSpecialItem] = useState(null); // Track equipped special item
   const [turnCounter, setTurnCounter] = useState(0); // To track turns
   const [isPlayerTurn, setIsPlayerTurn] = useState(true); // Track if it's player's turn
+  const [poisoned, setPoisoned] = useState(false); // Track if the boss is poisoned
 
   const logRef = useRef(null);
 
@@ -58,6 +63,46 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
     setIsAttacking(false); // End turn after action
   };
 
+  // Handle special attack
+  const handleSpecialAttack = () => {
+    if (!isPlayerTurn || !isSpecialReady || !equippedSpecialItem) return; // Ensure it's player's turn and special item is equipped
+
+    setIsPlayerTurn(false); // Disable player's actions while it's boss's turn
+    setIsSpecialReady(false);
+
+    if (equippedSpecialItem.effect === "heal") {
+      const healAmount = equippedSpecialItem.healAmount;
+      setPlayer((prev) => ({
+        ...prev,
+        health: Math.min(prev.health + healAmount, 100),
+      }));
+
+      const healMessages = [
+        `You use ${equippedSpecialItem.name} and heal for ${healAmount} health.`,
+        `A powerful elixir heals you for ${healAmount} health.`,
+      ];
+      setActionLog((prev) => [
+        ...prev,
+        healMessages[Math.floor(Math.random() * healMessages.length)],
+      ]);
+    } else if (equippedSpecialItem.effect === "poison") {
+      setPoisoned(true);
+      const poisonMessages = [
+        `You poisoned ${boss.name} with ${equippedSpecialItem.name}!`,
+        `${boss.name} is now poisoned by ${equippedSpecialItem.name}!`,
+      ];
+      setActionLog((prev) => [
+        ...prev,
+        poisonMessages[Math.floor(Math.random() * poisonMessages.length)],
+      ]);
+    }
+
+    setTimeout(handleBossTurn, 2000); // Delay for boss turn (2 seconds)
+
+    // End the turn by incrementing the turn counter
+    setTurnCounter((prev) => prev + 1); // Increment turn count
+  };
+
   // Handle player healing
   const handleHeal = () => {
     if (!isPlayerTurn || healCooldown > 0) return; // Prevent healing if cooldown is active or it's not the player's turn
@@ -89,38 +134,6 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
     setTimeout(handleBossTurn, 2000); // After healing, trigger the boss's turn
   };
 
-  // Handle special attack
-  const handleSpecialAttack = () => {
-    if (!isPlayerTurn || !isSpecialReady) return; // Ensure it's player's turn and special attack is ready
-
-    setIsPlayerTurn(false); // Disable player's actions while it's boss's turn
-    setIsSpecialReady(false);
-
-    const specialDamage = 30;
-    const newBossHealth = boss.health - specialDamage;
-
-    setBoss((prev) => ({ ...prev, health: newBossHealth }));
-
-    const specialMessages = [
-      `You unleash a mighty special attack, dealing ${specialDamage} damage!`,
-      `With all your strength, you deliver a special blow for ${specialDamage} damage!`,
-      `A powerful special attack lands, dealing ${specialDamage} damage to ${boss.name}!`,
-    ];
-    setActionLog((prev) => [
-      ...prev,
-      specialMessages[Math.floor(Math.random() * specialMessages.length)],
-    ]);
-
-    if (newBossHealth <= 0) {
-      handleVictory();
-    } else {
-      setTimeout(handleBossTurn, 2000); // Delay for boss turn (2 seconds)
-    }
-
-    // End the turn by incrementing the turn counter
-    setTurnCounter((prev) => prev + 1); // Increment turn count
-  };
-
   // Boss's turn
   const handleBossTurn = () => {
     const bossDamage = boss.damage || 0; // Default to 0 if boss.damage is undefined
@@ -149,7 +162,19 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
       bossMessages[Math.floor(Math.random() * bossMessages.length)],
     ]);
 
-    if (Math.random() < 0.2) setIsSpecialReady(true);
+    // Apply poison damage
+    if (poisoned) {
+      const poisonDamage = 5; // Poison damage per turn
+      setBoss((prev) => ({
+        ...prev,
+        health: prev.health - poisonDamage,
+      }));
+      setActionLog((prev) => [
+        ...prev,
+        `${boss.name} is poisoned and takes ${poisonDamage} damage!`,
+      ]);
+      setPoisoned(false); // Poison lasts for one turn
+    }
 
     // Enable player's turn after boss's turn is finished
     setIsPlayerTurn(true);
@@ -157,10 +182,10 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
 
   // Handle victory
   const handleVictory = () => {
-    if (level >= 20) {
+    if (level >= 5) {
       setActionLog((prev) => [
         ...prev,
-        `Congratulations! You've reached the max level and defeated ${boss.name}!`,
+        `Congratulations! You've reached level 5 and defeated ${boss.name}!`,
       ]);
       alert("You have completed the game! Victory!");
       return;
@@ -182,7 +207,13 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
 
   // Generate new weapon
   const generateWeapon = (level) => {
-    const name = weaponNames[Math.floor(Math.random() * weaponNames.length)];
+    const names = [
+      "The Dark Void Blade",
+      "Reaper's Wrath",
+      "Hell's Edge",
+      "Grim Slaughterer",
+    ];
+    const name = names[Math.floor(Math.random() * names.length)];
     const damage = Math.floor(10 + level * 2 + Math.random() * 5);
 
     return { name, damage };
@@ -211,7 +242,7 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
       <Player player={player} healCooldown={healCooldown} turnCounter={turnCounter} />
 
       <div className="battle-stats">
-        <h2>Boss: {boss.name}</h2> {/* Added this line to show the boss name */}
+        <h2>Boss: {boss.name}</h2>
         <h3>Boss Health: {boss.health}</h3>
         <h3>Level: {level}</h3>
         <h3>
@@ -251,11 +282,12 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
       </div>
 
       <div className="inventory">
-        <h3>Inventory</h3>
+        <h3>Inventory (Bag of Grey)</h3>
         {inventory.map((item, index) => (
           <div key={index}>
             <p>
-              {item.name} {item.damage ? `(Damage: ${item.damage})` : ""} 
+              {item.name} {item.damage ? `(Damage: ${item.damage})` : ""}
+              {item.healAmount ? `(Heal: ${item.healAmount})` : ""}
               <button onClick={() => setEquippedWeapon(item)}>
                 Equip Weapon
               </button>
