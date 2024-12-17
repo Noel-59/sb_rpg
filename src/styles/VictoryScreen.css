@@ -1,0 +1,12 @@
+/* VictoryScreen.css */
+.victory-screen {
+  text-align: center;
+  background-color: #222;
+  color: white;
+  padding: 50px;
+}
+
+.victory-message h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
