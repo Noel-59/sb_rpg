@@ -3,34 +3,49 @@ import Battle from "./components/Battle";
 import VictoryScreen from "./components/VictoryScreen";
 import GameOver from "./components/GameOver";
 import './styles/App.css';
+import { generateBoss } from './components/Boss'; // Import the generateBoss function
 
 const App = () => {
   const [gameOver, setGameOver] = useState(false);
+  const [currentLevel, setCurrentLevel] = useState(1); // Track current level
   const [player, setPlayer] = useState({
-    health: 100, // Make sure health is initialized correctly
+    health: 100,
     level: 1,
     xp: 0,
     buffs: [],
     debuffs: [],
-    specialMeter: 0, // Ensure specialMeter exists if it's being used
   });
 
-  const [boss, setBoss] = useState({ name: "Sharkboy", health: 150, damage: 10 }); // Ensure damage is set for boss
+  const [boss, setBoss] = useState(generateBoss(currentLevel)); // Initial boss at level 1
 
-  useEffect(() => {
-    // Charge special meter as player takes damage or does actions
-    if (player.health < 100) {
-      setPlayer(prev => ({ ...prev, specialMeter: prev.specialMeter + 1 }));
-    }
-  }, [player.health]);
-
+  // Handle player victory and move to the next level
   const handleVictory = () => {
     setGameOver(true);
-    setPlayer(prev => ({ ...prev, xp: prev.xp + 50 }));
+    setPlayer((prev) => ({
+      ...prev,
+      xp: prev.xp + 100,
+      level: currentLevel + 1,
+    }));
   };
 
+  // Handle defeat and end game
   const handleDefeat = () => {
     setGameOver(true);
+  };
+
+  // Restart the current level
+  const handleRestart = () => {
+    setGameOver(false);
+    setPlayer((prev) => ({ ...prev, health: 100 }));
+    setBoss(generateBoss(currentLevel)); // Regenerate the boss at the current level
+  };
+
+  // Move to the next level
+  const handleNextLevel = () => {
+    setGameOver(false);
+    setCurrentLevel((prev) => prev + 1); // Increment level
+    setBoss(generateBoss(currentLevel + 1)); // Generate a stronger boss
+    setPlayer((prev) => ({ ...prev, health: 100 })); // Reset health
   };
 
   return (
@@ -45,9 +60,9 @@ const App = () => {
           onDefeat={handleDefeat}
         />
       ) : player.health > 0 ? (
-        <VictoryScreen player={player} />
+        <VictoryScreen player={player} onNextLevel={handleNextLevel} />
       ) : (
-        <GameOver onRestart={() => window.location.reload()} />
+        <GameOver onRestart={handleRestart} />
       )}
     </div>
   );

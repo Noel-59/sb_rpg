@@ -15,6 +15,7 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
   const [equippedWeapon, setEquippedWeapon] = useState(startingWeapon);
   const [turnCounter, setTurnCounter] = useState(0); // To track turns
   const [isPlayerTurn, setIsPlayerTurn] = useState(true); // Track if it's player's turn
+  const [potions, setPotions] = useState(2); // Starting with 2 healing potions
 
   const logRef = useRef(null);
 

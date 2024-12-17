@@ -18,22 +18,22 @@ export const weaponNames = [
   "Haze of Despair",
   "Soulbreaker",
   "Drowned Souls Hook",
-  "Templespray Crossbow", // Reference to Temple Spray
-  "Chained Heart's Thorn", // A thematic reference to $uicideboy$ lyrics
+  "Templespray Crossbow",
+  "Chained Heart's Thorn",
   "Cursed Silence",
   "Wraith's Tear",
   "Requiem's Bite",
   "Eternal Decay",
   "Phantom's Fang",
-  "Revenant's Grit", // Inspired by themes of revenge and death
+  "Revenant's Grit",
   "Sacred Inferno",
   "Fractured Soulblade",
   "Fury of the Fallen",
   "Crimson Rebirth",
   "Dark Sacrifice Dagger",
-  "Now I'm Up To My Neck Cleaver", // Reference to the French lyric from $uicideboy$
-  "Soul Drain Scythe", // Dark, draining imagery
-  "Throne of Ashes Hammer", // $uicideboy$-esque imagery
+  "Now I'm Up To My Neck Cleaver",
+  "Soul Drain Scythe",
+  "Throne of Ashes Hammer",
 ];
 
 export const monsterNames = [
@@ -54,10 +54,10 @@ export const monsterNames = [
   "Flesh Eater",
   "Eternal Demon",
   "Abyssal Leviathan",
-  "Blight Guardian", // Reference to plague and suffering
-  "Hollow Reaper", // A dark, $uicideboy$-esque figure
+  "Blight Guardian",
+  "Hollow Reaper",
   "Wicked Chimera",
-  "Wraith King", // Undead royalty
+  "Wraith King",
   "Dread Tyrant",
   "Grave Treader",
   "Terror of the Depths",
@@ -66,33 +66,33 @@ export const monsterNames = [
   "Endless Shadow",
   "Demon of Lament",
   "Ravager of Souls",
-  "Frozen Mourner", // Cold, isolated, and sorrowful
-  "Vengeful Apparition", // Seeking revenge
-  "Shattered Soul", // Reference to emotional ruin
-  "Fallen Monarch", // A dark king fallen from grace
+  "Frozen Mourner",
+  "Vengeful Apparition",
+  "Shattered Soul",
+  "Fallen Monarch",
   "Cursed Knight",
   "Revenant Behemoth",
   "Berserker Fiend",
-  "Scarred Horror", // An image of deep scars and torment
-  "Bleeding Shadow", // Continuous suffering
-  "Cloak of Misery", // Dark and sorrowful image
+  "Scarred Horror",
+  "Bleeding Shadow",
+  "Cloak of Misery",
   "Skeletal Tyrant",
-  "Undying Executioner", // Themes of death and endless punishment
-  "Whispering Haunt", // Haunting voice in the dark
+  "Undying Executioner",
+  "Whispering Haunt",
   "Ravaging Beast",
-  "Doomed Terror", // Overwhelming fear
-  "Shattered Revenant", // A broken soul returning for vengeance
-  "Tear of the Fallen", // Imagery of sorrow
-  "Crimson Wraith", // A blood-soaked phantom
+  "Doomed Terror",
+  "Shattered Revenant",
+  "Tear of the Fallen",
+  "Crimson Wraith",
   "Flesh Reaper",
-  "Soulmonger", // A creature that feeds on souls
+  "Soulmonger",
   "Abyss Wanderer",
-  "King of the Endtimes", // A ruler over a ruined world
+  "King of the Endtimes",
   "Cursebringer",
   "Scourge of Hope",
-  "Hollow Monarch", // A ruler devoid of life and purpose
-  "Ashen Behemoth", // A giant beast born from ashes
-  "Temple King's Shadow", // Inspired by the "Temple Spray" vibe
-  "Chained Demon", // A demon bound and shackled
-  "Echo of Misery", // A reflection of misery
+  "Hollow Monarch",
+  "Ashen Behemoth",
+  "Temple King's Shadow",
+  "Chained Demon",
+  "Echo of Misery",
 ];

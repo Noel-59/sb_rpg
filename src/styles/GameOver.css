@@ -18,3 +18,19 @@ button {
 button:hover {
   background-color: #a00;
 }
+
+.retry-button {
+  padding: 10px 20px;
+  font-size: 18px;
+  color: white;
+  background-color: #dc3545; /* Red for retry */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.retry-button:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}

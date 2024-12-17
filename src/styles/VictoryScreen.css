@@ -10,3 +10,19 @@
   font-size: 3em;
   margin-bottom: 20px;
 }
+
+.next-level-button {
+  padding: 10px 20px;
+  font-size: 18px;
+  color: white;
+  background-color: #28a745; /* Green for next level */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.next-level-button:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}

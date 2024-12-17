@@ -1,5 +1,4 @@
 import React from "react";
-import '../styles/GameOver.css';
 
 const GameOver = ({ onRestart }) => {
   return (
