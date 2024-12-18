@@ -7,9 +7,7 @@ const Player = ({ player, healCooldown, turnCounter }) => {
       <h2 style={{ color: player.health < 30 ? "red" : "green" }}>
         Player Health: {player.health}
       </h2>
-      <h3>
-        Heal Cooldown: {healCooldown > 0 ? `${healCooldown} turns` : "Ready!"}
-      </h3>
+      <h3>Heal Cooldown: {healCooldown > 0 ? `${healCooldown} turns` : "Ready!"}</h3>
       <h3>Turn: {turnCounter}</h3>
     </div>
   );

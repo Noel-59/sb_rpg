@@ -3,12 +3,12 @@ import '../styles/Battle.css';
 
 // Function to generate boss based on the level
 export const generateBoss = (level) => {
-  const bossNames = ["Sharkboy", "Fire Lord", "Ice Queen", "Shadow Beast"];
+  const bossNames = ["Sharkboy", "Fire Dragon", "Stone Golem", "Specter of the Void"];
   const bossName = bossNames[Math.floor(Math.random() * bossNames.length)];
   return {
     name: `${bossName} - Level ${level}`,
-    health: 100 + level * 20, // Increase boss health as levels progress
-    damage: 10 + level * 3, // Increase damage as levels progress
+    health: 15 + level * 10, // Start with 15 HP for level 1 and increase
+    damage: 5 + level * 2,   // Start with low damage and increase as level progresses
   };
 };
 

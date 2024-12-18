@@ -44,7 +44,7 @@ const App = () => {
         inventory: [...prev.inventory, newItem], // Add the new item to the player's inventory
       };
     });
-  };
+  };  
 
   // Handle defeat and end game
   const handleDefeat = () => {

@@ -32,36 +32,29 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
   // Handle player attack
   const handleAttack = () => {
     if (!isPlayerTurn || isAttacking || healCooldown > 0) return; // Ensure only one action per turn
-
-    setIsPlayerTurn(false); // Disable player's actions while it's boss's turn
+    
+    setIsPlayerTurn(false);
     setIsAttacking(true);
-
-    // Check that equippedWeapon is not undefined
-    const playerDamage = Math.floor(Math.random() * 5) + (equippedWeapon?.damage || 0);  // Default to 0 if undefined
+    
+    const playerDamage = Math.floor(Math.random() * 5) + (equippedWeapon?.damage || 0);
     const newBossHealth = boss.health - playerDamage;
-
+  
     setBoss((prev) => ({ ...prev, health: newBossHealth }));
-
-    const attackMessages = [
-      `You swung ${equippedWeapon?.name} and dealt ${playerDamage} damage!`,
-      `Your attack with ${equippedWeapon?.name} hit hard, dealing ${playerDamage} damage!`,
-      `You slash with ${equippedWeapon?.name}, causing ${playerDamage} damage to ${boss.name}!`,
-    ];
+  
     setActionLog((prev) => [
       ...prev,
-      attackMessages[Math.floor(Math.random() * attackMessages.length)],
+      `You swung ${equippedWeapon?.name} and dealt ${playerDamage} damage!`,
     ]);
-
+  
     if (newBossHealth <= 0) {
       handleVictory();
     } else {
-      setTimeout(handleBossTurn, 2000); // Delay for boss turn (2 seconds)
+      setTimeout(handleBossTurn, 2000);
     }
-
-    // End the turn by incrementing the turn counter
-    setTurnCounter((prev) => prev + 1); // Increment turn count
-    setIsAttacking(false); // End turn after action
-  };
+  
+    setTurnCounter((prev) => prev + 1);
+    setIsAttacking(false);
+  };  
 
   // Handle special attack
   const handleSpecialAttack = () => {
@@ -105,34 +98,28 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
 
   // Handle player healing
   const handleHeal = () => {
-    if (!isPlayerTurn || healCooldown > 0) return; // Prevent healing if cooldown is active or it's not the player's turn
-
-    setIsPlayerTurn(false); // Disable player's actions while it's boss's turn
-
-    const healAmount = 20;
-    setPlayer((prev) => ({
-      ...prev,
-      health: Math.min(prev.health + healAmount, 100),
-    }));
-
-    const healMessages = [
-      `You rest and heal for ${healAmount} health.`,
-      `A quick heal restores ${healAmount} health.`,
-      `You take a moment to catch your breath and heal ${healAmount} health.`,
-    ];
-    setActionLog((prev) => [
-      ...prev,
-      healMessages[Math.floor(Math.random() * healMessages.length)],
-    ]);
-
-    // Set a cooldown of 2 to 4 turns
-    setHealCooldown(Math.floor(Math.random() * 3) + 2); // Random cooldown between 2 and 4 turns
-
-    // End the turn by incrementing the turn counter
-    setTurnCounter((prev) => prev + 1); // Increment turn count
-
-    setTimeout(handleBossTurn, 2000); // After healing, trigger the boss's turn
-  };
+    if (!isPlayerTurn || healCooldown > 0) return; // Prevent healing if cooldown is active
+    
+    setIsPlayerTurn(false); // Disable actions during boss's turn
+  
+    if (equippedSpecialItem?.effect === "heal") {
+      const healAmount = equippedSpecialItem.healAmount;
+      setPlayer((prev) => ({
+        ...prev,
+        health: Math.min(prev.health + healAmount, 100),
+      }));
+  
+      setActionLog((prev) => [
+        ...prev,
+        `You use ${equippedSpecialItem.name} and heal for ${healAmount} health.`,
+      ]);
+    }
+  
+    setHealCooldown(Math.floor(Math.random() * 3) + 2); // Random cooldown (2-4 turns)
+    setTurnCounter((prev) => prev + 1);
+  
+    setTimeout(handleBossTurn, 2000); // Proceed to boss's turn after healing
+  };  
 
   // Boss's turn
   const handleBossTurn = () => {
@@ -182,28 +169,29 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
 
   // Handle victory
   const handleVictory = () => {
-    if (level >= 5) {
+    if (level >= 10) {
       setActionLog((prev) => [
         ...prev,
-        `Congratulations! You've reached level 5 and defeated ${boss.name}!`,
+        `Congratulations! You've reached level 10 and defeated ${boss.name}!`,
       ]);
       alert("You have completed the game! Victory!");
       return;
     }
-
-    const newWeapon = generateWeapon(level + 1);
-    setInventory((prev) => [...prev, newWeapon]);
-
+  
+    // Randomly assign an item (healing potion, weapon, etc.) after a victory
+    const newItem = generateItem(level + 1); // Generate a new item (weapon or potion)
+    setInventory((prev) => [...prev, newItem]);
+  
     setActionLog((prev) => [
       ...prev,
-      `You defeated ${boss.name}! You received a new weapon: ${newWeapon.name} (Damage: ${newWeapon.damage}).`,
+      `You defeated ${boss.name}! You received a new item: ${newItem.name}`,
     ]);
-
+  
     setLevel((prev) => prev + 1);
     setBoss(generateBoss(level + 1)); // Generate new boss based on level
     setPlayer((prev) => ({ ...prev, health: 100 }));
     onVictory(); // Notify App component of victory
-  };
+  };  
 
   // Generate new weapon
   const generateWeapon = (level) => {
@@ -218,6 +206,16 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
 
     return { name, damage };
   };
+
+  const generateItem = (level) => {
+    const items = [
+      { name: "Healing Potion", effect: "heal", healAmount: 30 },
+      { name: "Power Sword", damage: 10 },
+      { name: "Defense Shield", effect: "defense", defenseBoost: 5 },
+    ];
+  
+    return items[Math.floor(Math.random() * items.length)];
+  };  
 
   // Generate boss for current level
   function generateBoss(level) {
@@ -282,22 +280,20 @@ const Battle = ({ player, setPlayer, boss, setBoss, onVictory, onDefeat }) => {
       </div>
 
       <div className="inventory">
-        <h3>Inventory (Bag of Grey)</h3>
-        {inventory.map((item, index) => (
-          <div key={index}>
-            <p>
-              {item.name} {item.damage ? `(Damage: ${item.damage})` : ""}
-              {item.healAmount ? `(Heal: ${item.healAmount})` : ""}
-              <button onClick={() => setEquippedWeapon(item)}>
-                Equip Weapon
-              </button>
-              <button onClick={() => setEquippedSpecialItem(item)}>
-                Equip Special Item
-              </button>
-            </p>
-          </div>
-        ))}
-      </div>
+  <h3>Inventory (Bag of Grey)</h3>
+  {inventory.map((item, index) => (
+    <div key={index}>
+      <p>
+        {item.name} {item.damage ? `(Damage: ${item.damage})` : ""}
+        {item.healAmount ? `(Heal: ${item.healAmount})` : ""}
+        <button onClick={() => item.damage ? setEquippedWeapon(item) : setEquippedSpecialItem(item)}>
+          Equip
+        </button>
+      </p>
+    </div>
+  ))}
+</div>
+
 
       {/* Your Hand Box */}
       <div className="your-hand">
