@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/sb_rpg/static/css/main.d69965bc.css",
-    "main.js": "/sb_rpg/static/js/main.794b5a8b.js",
+    "main.js": "/sb_rpg/static/js/main.a21889bc.js",
     "index.html": "/sb_rpg/index.html",
     "main.d69965bc.css.map": "/sb_rpg/static/css/main.d69965bc.css.map",
-    "main.794b5a8b.js.map": "/sb_rpg/static/js/main.794b5a8b.js.map"
+    "main.a21889bc.js.map": "/sb_rpg/static/js/main.a21889bc.js.map"
   },
   "entrypoints": [
     "static/css/main.d69965bc.css",
-    "static/js/main.794b5a8b.js"
+    "static/js/main.a21889bc.js"
   ]
 }
